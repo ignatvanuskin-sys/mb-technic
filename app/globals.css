@@ -310,7 +310,9 @@ body {
     border: 1px solid var(--line);
     color: #f2f3f5;
     padding: 0.95rem 1.05rem;
-    font-size: 0.95rem;
+    /* 16px is the iOS Safari threshold: anything smaller makes the browser
+       auto-zoom the page when the field receives focus. */
+    font-size: 1rem;
     transition:
       border-color 0.3s ease,
       background-color 0.3s ease;
