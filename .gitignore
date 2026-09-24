@@ -1,0 +1,30 @@
+node_modules/
+.next/
+out/
+build/
+.DS_Store
+*.pem
+npm-debug.log*
+.env*
+!.env.example
+next-env.d.ts
+.vercel
+*.tsbuildinfo
+
+# Runtime booking database (created by the API on first write)
+data/bookings.json
+
+# Local run logs
+server.log
+server.err
+
+# Raw source photos pulled from 2GIS / Instagram (~24 MB). Not served by the site and
+# re-creatable at any time with `npm run media`; the optimised derivatives the site
+# actually serves are committed under public/media/opt and public/media/instagram.
+public/media/gallery/
+
+# Visual QA artefacts — text reports are committed, multi-MB screenshots are not
+sheet-*.png
+qa*/_tmp/
+qa*/*.png
+qa*/*.jpg
