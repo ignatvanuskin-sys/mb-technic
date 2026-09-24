@@ -250,8 +250,10 @@ body {
       transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
+  /* Touch feedback: a short, cheap press response (transform only — no repaint). */
   .btn:active {
-    transform: translateY(1px);
+    transform: translateY(1px) scale(0.985);
+    transition-duration: 90ms;
   }
 
   .btn-primary {
@@ -348,6 +350,22 @@ body {
   select.field option {
     background: #14181d;
     color: #f2f3f5;
+  }
+
+  /* Hero photograph settles into place on load — one transform, no layout work. */
+  @keyframes heroSettle {
+    from {
+      transform: scale(1.16);
+      opacity: 0.55;
+    }
+    to {
+      transform: scale(1.08);
+      opacity: 1;
+    }
+  }
+
+  .hero-photo {
+    animation: heroSettle 1.7s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
   /* Film grain — one very low-opacity layer for a photographic finish */

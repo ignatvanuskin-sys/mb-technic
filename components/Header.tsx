@@ -173,7 +173,9 @@ export function Header() {
             <button
               type="button"
               onClick={() => openBooking()}
-              className="btn btn-primary hidden !px-5 !py-3 text-[0.75rem] sm:inline-flex"
+              /* Visible on phones wide enough to fit it next to the logo + hamburger;
+                 on narrower screens the bottom bar (which appears on scroll) takes over. */
+              className="btn btn-primary hidden !px-4 !py-3 text-[0.75rem] min-[420px]:inline-flex"
             >
               Записаться
             </button>

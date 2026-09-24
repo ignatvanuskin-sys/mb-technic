@@ -47,7 +47,7 @@ export function Hero() {
             fetchPriority="high"
             quality={84}
             sizes="(max-width: 1024px) 100vw, 60vw"
-            className="scale-[1.08] object-cover object-[52%_38%]"
+            className="hero-photo scale-[1.08] object-cover object-[52%_38%]"
           />
         </div>
         {/* Overlays: mobile = bottom-up, desktop = left-to-right */}

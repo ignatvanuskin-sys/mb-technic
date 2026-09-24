@@ -58,7 +58,14 @@ export function Services() {
             {services.map((s, i) => {
               const isActive = i === active;
               return (
-                <li key={s.no} className="border-b border-white/10 last:border-b-0">
+                /* Rows arrive one after another — a light stagger that reads well on
+                   phones, where the list is scrolled rather than hovered. */
+                <Reveal
+                  key={s.no}
+                  as="li"
+                  delay={i * 55}
+                  className="border-b border-white/10 last:border-b-0"
+                >
                   <button
                     type="button"
                     onMouseEnter={() => setActive(i)}
@@ -124,10 +131,10 @@ export function Services() {
                     >
                       <ArrowUpRight size={16} strokeWidth={1.75} />
                     </span>
-                  </button>
-                </li>
-              );
-            })}
+                   </button>
+                 </Reveal>
+               );
+             })}
           </ul>
 
           {/* Sticky preview — follows the hovered row */}
