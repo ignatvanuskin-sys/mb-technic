@@ -42,3 +42,4 @@ verify-prod/**/*.png
 verify-prod/**/*.jpg
 verify-prod/**/*.js
 vc-*.txt
+verify*/**/*.json
