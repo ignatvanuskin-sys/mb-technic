@@ -43,3 +43,6 @@ verify-prod/**/*.jpg
 verify-prod/**/*.js
 vc-*.txt
 verify*/**/*.json
+verify*/**/*.png
+verify*/**/*.jpg
+verify*/**/*.js
