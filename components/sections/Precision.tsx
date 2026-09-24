@@ -76,14 +76,14 @@ export function Precision() {
                 <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/10 to-transparent" />
                 <figcaption className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 md:p-6">
                   <span>
-                    <span className="block font-mono text-[0.625rem] tracking-[0.24em] text-white/55">
+                    <span className="block font-mono text-[0.75rem] tracking-[0.24em] text-white/55">
                       {tile.meta.toUpperCase()}
                     </span>
                     <span className="mt-1.5 block text-base uppercase tracking-[-0.01em] text-white md:text-lg">
                       {tile.caption}
                     </span>
                   </span>
-                  <span className="font-mono text-[0.625rem] tracking-[0.2em] text-white/35">
+                  <span className="font-mono text-[0.75rem] tracking-[0.2em] text-white/35">
                     0{i + 1}
                   </span>
                 </figcaption>

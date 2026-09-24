@@ -45,7 +45,7 @@ export function Hero() {
             fill
             priority
             fetchPriority="high"
-            quality={82}
+            quality={84}
             sizes="(max-width: 1024px) 100vw, 60vw"
             className="scale-[1.08] object-cover object-[52%_38%]"
           />
@@ -55,7 +55,7 @@ export function Hero() {
       </div>
 
       {/* ── Content ────────────────────────────────────────────────── */}
-      <div className="hero-body shell relative z-10 flex flex-1 flex-col justify-end pb-[calc(68px+1.5rem)] pt-[calc(var(--header-h)+1.25rem)] md:justify-center md:pb-20 md:pt-28 lg:pb-24">
+      <div className="hero-body shell relative z-10 flex flex-1 flex-col justify-end pb-[calc(68px+1.5rem+var(--safe-bottom))] pt-[calc(var(--header-h)+var(--safe-top)+1.25rem)] md:justify-center md:pb-20 md:pt-28 lg:pb-24">
         <div className="max-w-3xl">
           <p
             className="hero-eyebrow label-bright label flex flex-wrap items-center gap-x-3 gap-y-2"
@@ -108,14 +108,14 @@ export function Hero() {
               href={site.links.twoGis}
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex items-center gap-3"
+              className="group -my-2 flex min-h-[44px] items-center gap-3 py-2"
             >
               <span className="flex items-center gap-1 text-accent" aria-hidden>
                 {Array.from({ length: 5 }).map((_, i) => (
                   <Star key={i} size={13} className="fill-current" strokeWidth={0} />
                 ))}
               </span>
-              <span className="hero-rating-label font-mono text-[0.688rem] tracking-[0.16em] text-white/60 transition-colors group-hover:text-white">
+              <span className="hero-rating-label font-mono text-[0.75rem] tracking-[0.14em] text-white/60 transition-colors group-hover:text-white">
                 {site.rating.valueLabel} · {site.rating.ratings} ОЦЕНОК В{" "}
                 {site.rating.source.toUpperCase()}
               </span>
@@ -123,7 +123,7 @@ export function Hero() {
 
             <span className="hero-trust-divider hidden h-4 w-px bg-white/15 sm:block" />
 
-            <span className="hero-trust-hours font-mono text-[0.688rem] tracking-[0.16em] text-white/60">
+            <span className="hero-trust-hours font-mono text-[0.75rem] tracking-[0.14em] text-white/60">
               ЕЖЕДНЕВНО {site.hoursShort}
             </span>
           </div>
@@ -139,7 +139,7 @@ export function Hero() {
           <SpecItem label="Запись" value="Онлайн 24/7" accent />
           <a
             href="#services"
-            className="flex items-center gap-3 px-2 py-4 font-mono text-[0.625rem] tracking-[0.24em] text-white/45 transition-colors hover:text-white"
+            className="flex items-center gap-3 px-2 py-4 font-mono text-[0.75rem] tracking-[0.24em] text-white/45 transition-colors hover:text-white"
           >
             ЛИСТАЙТЕ
             <ArrowDown size={14} strokeWidth={1.5} className="animate-bounce" />
@@ -161,7 +161,7 @@ function SpecItem({
 }) {
   return (
     <div className="border-l border-white/10 px-6 py-4 first:border-l-0 first:pl-0">
-      <p className="font-mono text-[0.563rem] tracking-[0.24em] text-white/35">
+      <p className="font-mono text-[0.6875rem] tracking-[0.24em] text-white/35">
         {label.toUpperCase()}
       </p>
       <p

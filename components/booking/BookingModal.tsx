@@ -70,6 +70,10 @@ export function BookingModal() {
   const [done, setDone] = useState<Booking | null>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const errorRef = useRef<HTMLDivElement>(null);
+  /* Height of the *visual* viewport on phones. Shrinks when the on-screen keyboard
+     appears, which keeps the step buttons on screen instead of behind the keyboard. */
+  const [vpHeight, setVpHeight] = useState<number | null>(null);
 
   /* Fresh session every time the modal opens. */
   useEffect(() => {
@@ -106,6 +110,43 @@ export function BookingModal() {
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, [isOpen, closeBooking]);
+
+  /* A failed submission must be impossible to miss: bring the error (and its
+     WhatsApp fallback) into view instead of leaving it below the fold. */
+  useEffect(() => {
+    if (!serverError) return;
+    errorRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }, [serverError]);
+
+  /* Track the visual viewport so the modal fits above the on-screen keyboard. */
+  useEffect(() => {
+    if (!isOpen) {
+      setVpHeight(null);
+      return;
+    }
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const update = () => {
+      /* Desktop widths never show an on-screen keyboard — leave the CSS in charge. */
+      if (window.innerWidth >= 768) {
+        setVpHeight(null);
+        return;
+      }
+      const h = Math.round(vv.height);
+      setVpHeight(h > 0 && h < window.innerHeight - 60 ? h : null);
+    };
+    update();
+    vv.addEventListener("resize", update);
+    vv.addEventListener("scroll", update);
+    window.addEventListener("resize", update);
+    window.addEventListener("orientationchange", update);
+    return () => {
+      vv.removeEventListener("resize", update);
+      vv.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+      window.removeEventListener("orientationchange", update);
+    };
+  }, [isOpen]);
 
   const set = <K extends keyof FormState>(key: K, value: FormState[K]) => {
     setForm((f) => ({ ...f, [key]: value }));
@@ -218,7 +259,7 @@ export function BookingModal() {
 
   return (
     <div
-      className="fixed inset-0 z-[120] overflow-y-auto overscroll-contain bg-ink/88 backdrop-blur-md animate-fade-in"
+      className="fixed inset-0 z-[120] h-[100dvh] overflow-hidden overscroll-contain bg-ink/88 backdrop-blur-md animate-fade-in"
       role="dialog"
       aria-modal="true"
       aria-labelledby="booking-title"
@@ -226,10 +267,14 @@ export function BookingModal() {
         if (e.target === e.currentTarget) closeBooking();
       }}
     >
-      <div className="flex min-h-full items-stretch justify-center p-0 md:items-center md:p-6">
+      <div className="flex h-full items-stretch justify-center p-0 md:items-center md:p-6">
         <div
           ref={panelRef}
-          className="relative flex w-full max-w-6xl flex-col overflow-hidden border-white/10 bg-graphite md:rounded-sm md:border lg:grid lg:grid-cols-[minmax(0,340px)_minmax(0,1fr)]"
+          /* On phones the panel fills the visible viewport and only the step body
+             scrolls, so the step buttons (incl. «Отправить заявку») never fall below
+             the fold. `vpHeight` pins it to the visual viewport while a keyboard is up. */
+          style={vpHeight ? { height: `${vpHeight}px`, maxHeight: `${vpHeight}px` } : undefined}
+          className="relative flex h-full w-full max-w-6xl flex-col overflow-hidden bg-graphite md:h-auto md:max-h-[min(92dvh,940px)] md:rounded-sm md:border md:border-white/10 lg:grid lg:grid-cols-[minmax(0,340px)_minmax(0,1fr)]"
         >
           <button
             type="button"
@@ -323,9 +368,9 @@ export function BookingModal() {
           </aside>
 
           {/* ── Step content ────────────────────────────────────────── */}
-          <div className="flex min-h-[100svh] flex-col md:min-h-0">
+          <div className="flex min-h-0 flex-1 flex-col">
             {/* mobile progress */}
-            <div className="border-b border-white/10 px-5 pb-4 pt-6 lg:hidden">
+            <div className="shrink-0 border-b border-white/10 px-5 pb-4 pt-6 lg:hidden">
               <p className="label">MB TECHNIC · ОНЛАЙН-ЗАПИСЬ</p>
               <div className="mt-3 flex items-center gap-2">
                 {STEPS.map((s, i) => (
@@ -347,7 +392,7 @@ export function BookingModal() {
             <div
               ref={contentRef}
               tabIndex={-1}
-              className="flex-1 overflow-y-auto px-5 py-7 outline-none md:px-10 md:py-10"
+              className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 py-7 outline-none md:px-10 md:py-10"
             >
               {done ? (
                 <SuccessPanel booking={done} onClose={closeBooking} />
@@ -404,8 +449,37 @@ export function BookingModal() {
                   </div>
 
                   {serverError ? (
-                    <div className="mt-6 border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-200">
-                      {serverError}
+                    <div
+                      ref={errorRef}
+                      role="alert"
+                      aria-live="assertive"
+                      className="mt-6 border border-red-500/40 bg-red-500/10 p-4"
+                    >
+                      <p className="text-sm text-red-200">{serverError}</p>
+                      {/* The lead must still reach the workshop: hand it to WhatsApp
+                          pre-filled, so one tap completes the request. */}
+                      <a
+                        href={`https://wa.me/${site.primaryPhone.whatsapp}?text=${encodeURIComponent(
+                          [
+                            "Заявка с сайта MB TECHNIC",
+                            `Услуга: ${form.service}`,
+                            `Авто: ${form.vehicleModel}, ${form.vehicleYear}`,
+                            form.date ? `Дата: ${formatRuLong(form.date)}` : "",
+                            form.time ? `Время: ${form.time}` : "",
+                            form.name ? `Имя: ${form.name}` : "",
+                            form.phone ? `Телефон: ${form.phone}` : "",
+                            form.comment ? `Комментарий: ${form.comment}` : "",
+                          ]
+                            .filter(Boolean)
+                            .join("\n"),
+                        )}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn btn-accent mt-4 w-full"
+                      >
+                        <MessageCircle size={16} strokeWidth={1.75} />
+                        Отправить заявку в WhatsApp
+                      </a>
                     </div>
                   ) : null}
                 </>
@@ -414,7 +488,10 @@ export function BookingModal() {
 
             {/* ── Footer nav ─────────────────────────────────────────── */}
             {!done ? (
-              <div className="sticky bottom-0 border-t border-white/10 bg-graphite/95 px-5 py-4 backdrop-blur md:px-10">
+              <div
+                className="shrink-0 border-t border-white/10 bg-graphite/95 px-5 py-4 backdrop-blur md:px-10"
+                style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}
+              >
                 <div className="flex items-center justify-between gap-3">
                   <button
                     type="button"

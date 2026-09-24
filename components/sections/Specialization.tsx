@@ -22,10 +22,10 @@ export function Specialization() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent" />
               <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-6">
-                <p className="font-mono text-[0.625rem] tracking-[0.24em] text-white/70">
+                <p className="font-mono text-[0.75rem] tracking-[0.24em] text-white/70">
                   G-КЛАСС · СЕРВИСНАЯ ЗОНА
                 </p>
-                <p className="font-mono text-[0.625rem] tracking-[0.24em] text-white/40">
+                <p className="font-mono text-[0.75rem] tracking-[0.24em] text-white/40">
                   01 / 04
                 </p>
               </div>
@@ -39,7 +39,7 @@ export function Specialization() {
                 <br />
                 Основное направление — ремонт двигателей.
               </p>
-              <p className="mt-3 font-mono text-[0.563rem] tracking-[0.2em] text-white/35">
+              <p className="mt-3 font-mono text-[0.6875rem] tracking-[0.2em] text-white/35">
                 ПО ДАННЫМ 2ГИС
               </p>
             </div>
@@ -98,7 +98,7 @@ export function Specialization() {
                 {PAYMENTS.map((p) => (
                   <span
                     key={p}
-                    className="border border-white/10 px-3 py-1.5 font-mono text-[0.625rem] tracking-[0.14em] text-white/45"
+                    className="border border-white/10 px-3 py-1.5 font-mono text-[0.75rem] tracking-[0.14em] text-white/45"
                   >
                     {p.toUpperCase()}
                   </span>

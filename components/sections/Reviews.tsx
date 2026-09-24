@@ -71,7 +71,7 @@ export function Reviews() {
               href={site.links.twoGisReviews}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-6 inline-flex items-center gap-2 font-mono text-[0.688rem] tracking-[0.18em] text-accent transition-colors hover:text-white"
+              className="mt-6 inline-flex min-h-[44px] items-center gap-2 py-2 font-mono text-[0.688rem] tracking-[0.18em] text-accent transition-colors hover:text-white"
             >
               ОТКРЫТЬ ОТЗЫВЫ В 2ГИС
               <ArrowUpRight size={14} strokeWidth={1.75} />
@@ -128,7 +128,7 @@ export function Reviews() {
 
               <footer className="mt-7 flex items-center justify-between gap-4 border-t border-white/10 pt-4">
                 <span className="text-sm text-white">{r.author}</span>
-                <span className="font-mono text-[0.625rem] tracking-[0.16em] text-white/35">
+                <span className="font-mono text-[0.75rem] tracking-[0.16em] text-white/35">
                   {r.date.toUpperCase()} · 2ГИС
                 </span>
               </footer>

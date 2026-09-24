@@ -42,12 +42,12 @@ export function Contacts() {
                 </Row>
 
                 <Row icon={<Phone size={17} strokeWidth={1.5} />} label="Телефоны">
-                  <span className="flex flex-col gap-1.5">
+                  <span className="flex flex-col items-start">
                     {site.phones.map((p) => (
                       <a
                         key={p.tel}
                         href={`tel:${p.tel}`}
-                        className="text-white transition-colors hover:text-accent"
+                        className="inline-flex min-h-[44px] items-center text-white transition-colors hover:text-accent"
                       >
                         {p.display}
                       </a>
@@ -56,14 +56,14 @@ export function Contacts() {
                 </Row>
 
                 <Row icon={<MessageCircle size={17} strokeWidth={1.5} />} label="Мессенджеры">
-                  <span className="flex flex-wrap gap-x-5 gap-y-2">
+                  <span className="flex flex-wrap gap-x-5">
                     {site.phones.map((p) => (
                       <a
                         key={p.whatsapp}
                         href={`https://wa.me/${p.whatsapp}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-white transition-colors hover:text-accent"
+                        className="inline-flex min-h-[44px] items-center text-white transition-colors hover:text-accent"
                       >
                         WhatsApp {p.display}
                       </a>
@@ -72,7 +72,7 @@ export function Contacts() {
                       href={site.onlineChat}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-white transition-colors hover:text-accent"
+                      className="inline-flex min-h-[44px] items-center text-white transition-colors hover:text-accent"
                     >
                       Онлайн-чат
                     </a>
@@ -116,9 +116,9 @@ export function Contacts() {
 
               {/* Pin card */}
               <div className="pointer-events-none absolute left-4 top-4 border border-white/12 bg-ink/92 px-4 py-3 backdrop-blur-md">
-                <p className="font-mono text-[0.563rem] tracking-[0.22em] text-accent">MB TECHNIC</p>
+                <p className="font-mono text-[0.6875rem] tracking-[0.22em] text-accent">MB TECHNIC</p>
                 <p className="mt-1 text-sm text-white">{site.addressLine}</p>
-                <p className="font-mono text-[0.563rem] tracking-[0.16em] text-white/40">
+                <p className="font-mono text-[0.6875rem] tracking-[0.16em] text-white/40">
                   {site.geo.lat.toFixed(6)}, {site.geo.lng.toFixed(6)}
                 </p>
               </div>
@@ -127,7 +127,7 @@ export function Contacts() {
                 href={site.links.twoGis}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="absolute bottom-4 right-4 border border-white/12 bg-ink/92 px-4 py-2.5 font-mono text-[0.625rem] tracking-[0.18em] text-white/70 backdrop-blur-md transition-colors hover:text-white"
+                className="absolute bottom-4 right-4 inline-flex min-h-[44px] items-center border border-white/12 bg-ink/92 px-4 py-2.5 font-mono text-[0.75rem] tracking-[0.18em] text-white/70 backdrop-blur-md transition-colors hover:text-white"
               >
                 ОТКРЫТЬ В 2ГИС
               </a>
@@ -152,7 +152,7 @@ function Row({
     <div className="grid grid-cols-[auto_minmax(0,1fr)] gap-5 py-6">
       <span className="mt-0.5 text-accent">{icon}</span>
       <div>
-        <dt className="font-mono text-[0.625rem] uppercase tracking-[0.24em] text-white/40">
+        <dt className="font-mono text-[0.75rem] uppercase tracking-[0.24em] text-white/40">
           {label}
         </dt>
         <dd className="mt-2.5 text-base leading-relaxed">{children}</dd>

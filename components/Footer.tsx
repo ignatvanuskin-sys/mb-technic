@@ -27,7 +27,7 @@ const COLUMNS = [
 export function Footer() {
   return (
     /* pb-[92px] keeps the last lines clear of the fixed mobile CTA bar */
-    <footer className="relative overflow-hidden border-t border-white/10 bg-ink pb-[92px] pt-16 md:pb-0">
+    <footer className="relative overflow-hidden border-t border-white/10 bg-ink pb-[calc(92px+var(--safe-bottom))] pt-16 md:pb-0">
       <div className="shell">
         <div className="grid gap-12 lg:grid-cols-[minmax(0,1.4fr)_repeat(3,minmax(0,1fr))]">
           {/* Brand */}
@@ -44,7 +44,7 @@ export function Footer() {
                 href={site.links.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="border border-white/12 px-3 py-2 font-mono text-[0.625rem] tracking-[0.16em] text-white/60 transition-colors hover:border-white/35 hover:text-white"
+                className="inline-flex min-h-[44px] items-center border border-white/12 px-3.5 py-2 font-mono text-[0.75rem] tracking-[0.16em] text-white/60 transition-colors hover:border-white/35 hover:text-white"
               >
                 INSTAGRAM
               </a>
@@ -52,7 +52,7 @@ export function Footer() {
                 href={site.links.twoGis}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="border border-white/12 px-3 py-2 font-mono text-[0.625rem] tracking-[0.16em] text-white/60 transition-colors hover:border-white/35 hover:text-white"
+                className="inline-flex min-h-[44px] items-center border border-white/12 px-3.5 py-2 font-mono text-[0.75rem] tracking-[0.16em] text-white/60 transition-colors hover:border-white/35 hover:text-white"
               >
                 2ГИС
               </a>
@@ -60,7 +60,7 @@ export function Footer() {
                 href={site.links.tiktok}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="border border-white/12 px-3 py-2 font-mono text-[0.625rem] tracking-[0.16em] text-white/60 transition-colors hover:border-white/35 hover:text-white"
+                className="inline-flex min-h-[44px] items-center border border-white/12 px-3.5 py-2 font-mono text-[0.75rem] tracking-[0.16em] text-white/60 transition-colors hover:border-white/35 hover:text-white"
               >
                 TIKTOK
               </a>
@@ -70,12 +70,13 @@ export function Footer() {
           {COLUMNS.map((col) => (
             <nav key={col.title} aria-label={col.title}>
               <p className="label">{col.title}</p>
-              <ul className="mt-5 space-y-3">
+              <ul className="mt-3 space-y-0.5">
                 {col.links.map((l) => (
                   <li key={l.label}>
                     <a
                       href={l.href}
-                      className="text-sm text-white/60 transition-colors hover:text-white"
+                      /* min-h-11 keeps every footer link a comfortable thumb target */
+                      className="flex min-h-[44px] items-center text-sm text-white/60 transition-colors hover:text-white"
                     >
                       {l.label}
                     </a>
@@ -87,17 +88,17 @@ export function Footer() {
 
           <div>
             <p className="label">Контакты</p>
-            <ul className="mt-5 space-y-3">
-              {site.phones.map((p) => (
-                <li key={p.tel}>
-                  <a
-                    href={`tel:${p.tel}`}
-                    className="font-mono text-sm text-white/60 transition-colors hover:text-white"
-                  >
-                    {p.display}
-                  </a>
-                </li>
-              ))}
+              <ul className="mt-3 space-y-0.5">
+                {site.phones.map((p) => (
+                  <li key={p.tel}>
+                    <a
+                      href={`tel:${p.tel}`}
+                      className="flex min-h-[44px] items-center font-mono text-sm text-white/60 transition-colors hover:text-white"
+                    >
+                      {p.display}
+                    </a>
+                  </li>
+                ))}
               <li className="text-sm leading-relaxed text-white/60">{site.addressLine}</li>
               <li className="text-sm leading-relaxed text-white/60">{site.hours}</li>
             </ul>
@@ -112,19 +113,19 @@ export function Footer() {
         </div>
 
         <div className="mt-10 flex flex-col justify-between gap-4 border-t border-white/10 py-8 md:flex-row md:items-center">
-          <p className="font-mono text-[0.625rem] tracking-[0.16em] text-white/35">
+          <p className="font-mono text-[0.75rem] tracking-[0.16em] text-white/35">
             © {new Date().getFullYear()} MB TECHNIC · MERCEDES-BENZ SPECIALIST · АСТАНА
           </p>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
             <Link
               href="/privacy"
-              className="font-mono text-[0.625rem] tracking-[0.16em] text-white/45 transition-colors hover:text-white"
+              className="inline-flex min-h-[44px] items-center font-mono text-[0.75rem] tracking-[0.16em] text-white/45 transition-colors hover:text-white"
             >
               ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ
             </Link>
             <Link
               href="/admin"
-              className="font-mono text-[0.625rem] tracking-[0.16em] text-white/45 transition-colors hover:text-white"
+              className="inline-flex min-h-[44px] items-center font-mono text-[0.75rem] tracking-[0.16em] text-white/45 transition-colors hover:text-white"
             >
               ПАНЕЛЬ ЗАЯВОК
             </Link>

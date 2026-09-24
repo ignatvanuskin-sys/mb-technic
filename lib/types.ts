@@ -58,11 +58,22 @@ export interface ApiError {
 export interface CreateBookingResponse {
   ok: true;
   booking: Booking;
+  /** True when the record could not be stored but the lead reached the workshop (Telegram). */
+  deliveredViaTelegramOnly?: boolean;
 }
+
+/**
+ * Where bookings are persisted:
+ *  - `kv`     — durable external store (Vercel KV / Upstash);
+ *  - `file`   — durable JSON file (local dev, VPS);
+ *  - `memory` — demo mode: works end-to-end but lives only inside the running instance.
+ */
+export type StorageDriverName = "kv" | "file" | "memory";
 
 export interface ListBookingsResponse {
   ok: true;
   bookings: Booking[];
+  storage?: StorageDriverName;
 }
 
 export const STATUS_LABELS: Record<BookingStatus, string> = {

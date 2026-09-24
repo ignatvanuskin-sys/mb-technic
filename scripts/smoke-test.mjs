@@ -106,6 +106,12 @@ let cookie = "";
   const data = JSON.parse(text);
   check("GET /api/bookings authenticated → 200", res.status === 200, `got ${res.status}`);
   check("authenticated list returns array", Array.isArray(data.bookings));
+  check(
+    "list reports the storage driver",
+    ["file", "kv", "memory"].includes(data.storage),
+    String(data.storage),
+  );
+  check("this environment persists to file storage", data.storage === "file", String(data.storage));
 }
 {
   const { res } = await get("/api/bookings/any-id", {

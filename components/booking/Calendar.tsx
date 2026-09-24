@@ -84,7 +84,7 @@ export function Calendar({ value, onChange, horizonDays = 60 }: CalendarProps) {
         {WEEKDAYS_SHORT.map((d) => (
           <div
             key={d}
-            className="py-1 text-center font-mono text-[0.625rem] tracking-[0.2em] text-white/35"
+            className="py-1 text-center font-mono text-[0.75rem] tracking-[0.2em] text-white/35"
           >
             {d}
           </div>

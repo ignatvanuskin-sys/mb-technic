@@ -44,7 +44,7 @@ export function Services() {
               href={site.links.twoGis}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-4 inline-flex items-center gap-2 font-mono text-[0.688rem] tracking-[0.18em] text-accent transition-colors hover:text-white"
+              className="mt-4 inline-flex min-h-[44px] items-center gap-2 py-2 font-mono text-[0.688rem] tracking-[0.18em] text-accent transition-colors hover:text-white"
             >
               ИСТОЧНИК: КАРТОЧКА 2ГИС
               <ArrowUpRight size={14} strokeWidth={1.75} />
@@ -81,13 +81,14 @@ export function Services() {
 
                     {/* mobile thumbnail */}
                     <span className="relative h-12 w-10 shrink-0 overflow-hidden bg-steel md:hidden">
-                      <Image
-                        src={s.image}
-                        alt=""
-                        fill
-                        sizes="40px"
-                        className="object-cover"
-                      />
+                       <Image
+                         src={s.image}
+                         alt=""
+                         aria-hidden
+                         fill
+                         sizes="40px"
+                         className="object-cover"
+                       />
                     </span>
 
                     {/* copy */}
@@ -104,7 +105,7 @@ export function Services() {
                         {s.tags.map((t) => (
                           <span
                             key={t}
-                            className="font-mono text-[0.625rem] tracking-[0.16em] text-white/40"
+                            className="font-mono text-[0.75rem] tracking-[0.16em] text-white/40"
                           >
                             {t.toUpperCase()}
                           </span>
@@ -140,7 +141,7 @@ export function Services() {
                     alt={s.imageAlt}
                     fill
                     sizes="340px"
-                    quality={80}
+                    quality={78}
                     className={[
                       "object-cover transition-all duration-[1.1s] ease-premium",
                       i === active ? "opacity-100 scale-100" : "opacity-0 scale-[1.06]",
@@ -149,7 +150,7 @@ export function Services() {
                 ))}
                 <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-transparent to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 p-5">
-                  <p className="font-mono text-[0.563rem] tracking-[0.24em] text-white/50">
+                  <p className="font-mono text-[0.6875rem] tracking-[0.24em] text-white/50">
                     {current.rubric.toUpperCase()}
                   </p>
                   <p className="mt-2 text-sm leading-snug text-white">{current.summary}</p>
@@ -157,7 +158,7 @@ export function Services() {
               </div>
 
               <div className="mt-6 border-t border-white/10 pt-5">
-                <p className="font-mono text-[0.625rem] tracking-[0.2em] text-white/35">
+                <p className="font-mono text-[0.75rem] tracking-[0.2em] text-white/35">
                   СТОИМОСТЬ
                 </p>
                 <p className="mt-2 text-sm leading-relaxed text-white/60">

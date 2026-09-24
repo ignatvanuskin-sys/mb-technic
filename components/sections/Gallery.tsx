@@ -85,7 +85,7 @@ export function Gallery() {
                   setOpenIndex(null);
                 }}
                 className={[
-                  "shrink-0 border px-4 py-2 font-mono text-[0.625rem] uppercase tracking-[0.18em] transition-colors duration-300",
+                  "inline-flex min-h-[44px] shrink-0 items-center border px-4 py-2.5 font-mono text-[0.75rem] uppercase tracking-[0.18em] transition-colors duration-300",
                   activeTag
                     ? "border-accent bg-accent/12 text-accent"
                     : "border-white/10 text-white/45 hover:border-white/30 hover:text-white",
@@ -113,7 +113,7 @@ export function Gallery() {
                 width={item.w}
                 height={item.h}
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                quality={72}
+                quality={78}
                 loading={i < 4 ? "eager" : "lazy"}
                 className="h-auto w-full object-cover transition-transform duration-[1.5s] ease-premium group-hover:scale-[1.045]"
               />
@@ -133,12 +133,12 @@ export function Gallery() {
             href={site.links.twoGisGallery}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 font-mono text-[0.688rem] tracking-[0.18em] text-accent transition-colors hover:text-white"
+            className="inline-flex min-h-[44px] items-center gap-2 py-2 font-mono text-[0.688rem] tracking-[0.18em] text-accent transition-colors hover:text-white"
           >
             ВСЕ ФОТОГРАФИИ В 2ГИС
             <ArrowUpRight size={14} strokeWidth={1.75} />
           </a>
-          <span className="font-mono text-[0.625rem] tracking-[0.16em] text-white/30">
+          <span className="font-mono text-[0.75rem] tracking-[0.16em] text-white/30">
             ФОТО: MB TECHNIC · 2ГИС
           </span>
         </div>
@@ -183,7 +183,7 @@ export function Gallery() {
                 width={active.w}
                 height={active.h}
                 sizes="(max-width: 1024px) 100vw, 80vw"
-                quality={85}
+                quality={84}
                 className="max-h-[72svh] w-auto object-contain"
               />
             </div>

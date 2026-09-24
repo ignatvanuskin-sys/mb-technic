@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Menu, Phone, X } from "lucide-react";
 import { Mark } from "./Mark";
 import { useBooking } from "./booking/BookingProvider";
@@ -20,6 +20,8 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [active, setActive] = useState<string>("");
+  const menuRef = useRef<HTMLDivElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -59,6 +61,55 @@ export function Header() {
     return () => window.removeEventListener("resize", onResize);
   }, [menuOpen]);
 
+  /* Mobile menu: body scroll lock, focus in/out, Escape to close, Tab trapped inside. */
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    const { overflow, paddingRight } = document.body.style;
+    const scrollbar = window.innerWidth - document.documentElement.clientWidth;
+    document.body.style.overflow = "hidden";
+    if (scrollbar > 0) document.body.style.paddingRight = `${scrollbar}px`;
+
+    /* Captured now: the ref may point elsewhere by the time cleanup runs. */
+    const toggle = toggleRef.current;
+
+    /* Move focus into the drawer so keyboard and screen-reader users land in it. */
+    const focusTarget =
+      menuRef.current?.querySelector<HTMLElement>("a[href], button:not([disabled])") ?? null;
+    focusTarget?.focus();
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        setMenuOpen(false);
+        return;
+      }
+      if (e.key !== "Tab" || !menuRef.current) return;
+      const nodes = Array.from(
+        menuRef.current.querySelectorAll<HTMLElement>("a[href], button:not([disabled])"),
+      );
+      if (nodes.length === 0) return;
+      const first = nodes[0];
+      const last = nodes[nodes.length - 1];
+      if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      } else if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      }
+    };
+
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = overflow;
+      document.body.style.paddingRight = paddingRight;
+      /* Returning to the trigger keeps the tab order predictable after closing. */
+      toggle?.focus();
+    };
+  }, [menuOpen]);
+
   return (
     <>
       <header
@@ -68,12 +119,15 @@ export function Header() {
             ? "border-b border-white/10 bg-ink/85 backdrop-blur-xl"
             : "border-b border-transparent bg-transparent",
         ].join(" ")}
-        style={{ height: "var(--header-h)" }}
+        style={{
+          height: "calc(var(--header-h) + var(--safe-top))",
+          paddingTop: "var(--safe-top)",
+        }}
       >
         <div className="shell flex h-full items-center justify-between gap-6">
           <a
             href="#top"
-            className="group flex items-center gap-3"
+            className="group -my-2 flex min-h-[44px] items-center gap-3 py-2"
             aria-label="MB TECHNIC — на главную"
           >
             <Mark className="text-chrome transition-transform duration-500 group-hover:rotate-[120deg]" />
@@ -81,7 +135,7 @@ export function Header() {
               <span className="display text-[0.95rem] tracking-[0.02em] text-white">
                 MB TECHNIC
               </span>
-              <span className="mt-1 font-mono text-[0.563rem] tracking-[0.28em] text-white/40">
+              <span className="mt-1 font-mono text-[0.75rem] tracking-[0.22em] text-white/45">
                 MERCEDES · ASTANA
               </span>
             </span>
@@ -124,6 +178,7 @@ export function Header() {
               Записаться
             </button>
             <button
+              ref={toggleRef}
               type="button"
               onClick={() => setMenuOpen((v) => !v)}
               className="grid h-11 w-11 place-items-center border border-white/15 text-white lg:hidden"
@@ -137,11 +192,27 @@ export function Header() {
         </div>
       </header>
 
-      {/* Mobile menu */}
+      {/* Backdrop — tapping it (the visible sliver under the drawer) closes the menu */}
+      <div
+        aria-hidden="true"
+        hidden={!menuOpen || isOpen}
+        onClick={() => setMenuOpen(false)}
+        className="fixed inset-0 z-[94] bg-ink/70 backdrop-blur-sm lg:hidden"
+      />
+
+      {/* Mobile menu — a sheet, not a full-bleed wall, so the backdrop stays tappable */}
       <div
         id="mobile-menu"
+        ref={menuRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Меню"
         hidden={!menuOpen || isOpen}
-        className="fixed inset-x-0 bottom-0 top-[var(--header-h)] z-[95] overflow-y-auto border-t border-white/10 bg-ink/97 backdrop-blur-xl lg:hidden"
+        onClick={(e) => {
+          /* Taps on the sheet's own background (not on a control) also close it. */
+          if (!(e.target as HTMLElement).closest("a, button")) setMenuOpen(false);
+        }}
+        className="fixed inset-x-0 top-[calc(var(--header-h)+var(--safe-top))] z-[95] max-h-[calc(100dvh-var(--header-h)-var(--safe-top)-68px)] overflow-y-auto overscroll-contain border-y border-white/10 bg-ink/97 backdrop-blur-xl lg:hidden"
       >
         <nav className="shell flex flex-col py-6" aria-label="Мобильная навигация">
           {NAV.map((item, i) => (
@@ -153,7 +224,7 @@ export function Header() {
               style={{ animation: `slideUp 0.5s cubic-bezier(0.16,1,0.3,1) ${i * 40}ms both` }}
             >
               {item.label}
-              <span className="font-mono text-[0.625rem] tracking-[0.2em] text-white/30">
+              <span className="font-mono text-[0.75rem] tracking-[0.2em] text-white/30">
                 0{i + 1}
               </span>
             </a>

@@ -46,7 +46,7 @@ export function InstagramSection() {
                   alt={post.caption}
                   fill
                   sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                  quality={70}
+                  quality={78}
                   loading="lazy"
                   className="object-cover transition-transform duration-[1.4s] ease-premium group-hover:scale-[1.06]"
                 />
@@ -62,7 +62,7 @@ export function InstagramSection() {
           ))}
         </div>
 
-        <p className="mt-6 font-mono text-[0.625rem] tracking-[0.16em] text-white/30">
+        <p className="mt-6 font-mono text-[0.75rem] tracking-[0.16em] text-white/30">
           ПУБЛИКАЦИИ @MB_TECHNIC.KZ · ПЕРЕХОД НА INSTAGRAM
         </p>
       </div>

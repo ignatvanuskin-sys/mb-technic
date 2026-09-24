@@ -23,8 +23,22 @@ server.err
 # actually serves are committed under public/media/opt and public/media/instagram.
 public/media/gallery/
 
-# Visual QA artefacts — text reports are committed, multi-MB screenshots are not
+# Visual QA artefacts — text reports (*.md) are committed, while multi-MB screenshots,
+# sub-agent scratch scripts and CLI dumps are not. The `**/` matters: some runs nest a
+# second directory (verify/verify/...).
 sheet-*.png
 qa*/_tmp/
-qa*/*.png
-qa*/*.jpg
+qa*/**/*.png
+qa*/**/*.jpg
+audit/**/*.png
+audit/**/*.jpg
+audit/**/*.js
+audit/**/*.json
+audit/**/*.txt
+verify/**/*.png
+verify/**/*.jpg
+verify/**/*.js
+verify-prod/**/*.png
+verify-prod/**/*.jpg
+verify-prod/**/*.js
+vc-*.txt

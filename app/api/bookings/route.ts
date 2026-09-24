@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { clearDemoBookings, createBooking, listBookings } from "@/lib/bookings";
+import { clearDemoBookings, createBooking, listBookings, storageDriver } from "@/lib/bookings";
 import { validateBooking } from "@/lib/validation";
 import { isAuthenticated } from "@/lib/auth";
 import type { ApiError, CreateBookingResponse, ListBookingsResponse } from "@/lib/types";
@@ -16,7 +16,11 @@ export async function GET() {
   }
   try {
     const bookings = await listBookings();
-    return NextResponse.json<ListBookingsResponse>({ ok: true, bookings });
+    return NextResponse.json<ListBookingsResponse>({
+      ok: true,
+      bookings,
+      storage: storageDriver(),
+    });
   } catch (e) {
     console.error("[bookings:GET]", e);
     return NextResponse.json<ApiError>(
@@ -66,13 +70,22 @@ export async function POST(request: Request) {
     (payload as Record<string, unknown>).demo === true;
 
   try {
-    const booking = await createBooking(value, { demo: wantsDemo });
-    return NextResponse.json<CreateBookingResponse>({ ok: true, booking }, { status: 201 });
+    const { booking, deliveredViaTelegramOnly } = await createBooking(value, { demo: wantsDemo });
+    return NextResponse.json<CreateBookingResponse>(
+      { ok: true, booking, deliveredViaTelegramOnly },
+      { status: 201 },
+    );
   } catch (e) {
+    const storageMissing = e instanceof Error && e.message.includes("Хранилищ");
     console.error("[bookings:POST]", e);
     return NextResponse.json<ApiError>(
-      { ok: false, error: "Не удалось сохранить заявку. Позвоните нам по телефону." },
-      { status: 500 },
+      {
+        ok: false,
+        error: storageMissing
+          ? "Не удалось сохранить заявку. Позвоните нам: +7 700 706 22 20 — мы примем запись по телефону."
+          : "Не удалось сохранить заявку. Попробуйте ещё раз или позвоните: +7 700 706 22 20.",
+      },
+      { status: storageMissing ? 503 : 500 },
     );
   }
 }
@@ -93,7 +106,14 @@ export async function DELETE(request: Request) {
     const removed = await clearDemoBookings();
     return NextResponse.json({ ok: true, removed });
   } catch (e) {
+    const storageMissing = e instanceof Error && e.message.includes("Хранилищ");
     console.error("[bookings:DELETE]", e);
-    return NextResponse.json<ApiError>({ ok: false, error: "Не удалось очистить." }, { status: 500 });
+    return NextResponse.json<ApiError>(
+      {
+        ok: false,
+        error: storageMissing ? "Хранилище заявок не настроено." : "Не удалось очистить.",
+      },
+      { status: storageMissing ? 503 : 500 },
+    );
   }
 }

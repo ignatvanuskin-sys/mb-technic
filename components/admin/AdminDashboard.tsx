@@ -20,7 +20,14 @@ import {
   XCircle,
 } from "lucide-react";
 import { Mark } from "../Mark";
-import { BOOKING_STATUSES, STATUS_LABELS, STATUS_TONE, type Booking, type BookingStatus } from "@/lib/types";
+import {
+  BOOKING_STATUSES,
+  STATUS_LABELS,
+  STATUS_TONE,
+  type Booking,
+  type BookingStatus,
+  type StorageDriverName,
+} from "@/lib/types";
 import { formatRuLong, startOfToday, toIso } from "@/lib/date";
 import { site, timeSlots } from "@/lib/site";
 
@@ -40,6 +47,7 @@ export function AdminDashboard() {
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [updatedAt, setUpdatedAt] = useState<string>("");
+  const [storage, setStorage] = useState<StorageDriverName | undefined>(undefined);
 
   /* Session gate — the board holds customer names, phones and VINs. */
   const [auth, setAuth] = useState<"checking" | "in" | "out">("checking");
@@ -59,6 +67,7 @@ export function AdminDashboard() {
       const data = await res.json();
       if (!res.ok || !data.ok) throw new Error(data.error ?? "Ошибка загрузки");
       setBookings(data.bookings as Booking[]);
+      setStorage(data.storage as StorageDriverName | undefined);
       setError(null);
       setUpdatedAt(new Date().toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" }));
     } catch (e) {
@@ -259,7 +268,7 @@ export function AdminDashboard() {
             <Mark size={24} className="text-chrome" />
             <div className="leading-none">
               <p className="display text-[0.95rem] text-white">MB TECHNIC</p>
-              <p className="mt-1 font-mono text-[0.563rem] tracking-[0.24em] text-white/40">
+              <p className="mt-1 font-mono text-[0.6875rem] tracking-[0.24em] text-white/40">
                 ПАНЕЛЬ ЗАЯВОК
               </p>
             </div>
@@ -319,12 +328,13 @@ export function AdminDashboard() {
 
               {defaultPw ? (
                 <div className="mt-6 border border-amber-500/30 bg-amber-500/[0.07] p-4 text-xs leading-relaxed text-amber-200/90">
-                  <p className="font-mono uppercase tracking-[0.16em]">Демо-режим</p>
+                  <p className="font-mono uppercase tracking-[0.16em]">Внимание</p>
                   <p className="mt-2">
-                    Пароль по умолчанию:{" "}
-                    <span className="font-mono text-amber-100">mb-technic</span>. Перед публикацией
+                    Администратор ещё не задал пароль, поэтому панель защищена стандартным
+                    значением из документации проекта. Пароль здесь намеренно не публикуется:
                     задайте переменную окружения{" "}
-                    <span className="font-mono text-amber-100">ADMIN_PASSWORD</span>.
+                    <span className="font-mono text-amber-100">ADMIN_PASSWORD</span> и
+                    перезапустите деплой.
                   </p>
                 </div>
               ) : null}
@@ -352,14 +362,14 @@ export function AdminDashboard() {
             <Mark size={22} className="text-chrome" />
             <div className="leading-none">
               <p className="display text-[0.9rem] text-white">MB TECHNIC</p>
-              <p className="mt-1 font-mono text-[0.563rem] tracking-[0.24em] text-white/40">
+              <p className="mt-1 font-mono text-[0.6875rem] tracking-[0.24em] text-white/40">
                 ПАНЕЛЬ ЗАЯВОК
               </p>
             </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <span className="hidden font-mono text-[0.625rem] tracking-[0.16em] text-white/35 md:inline">
+            <span className="hidden font-mono text-[0.75rem] tracking-[0.16em] text-white/35 md:inline">
               {updatedAt ? `ОБНОВЛЕНО ${updatedAt}` : "ЗАГРУЗКА…"}
             </span>
             <button
@@ -404,9 +414,21 @@ export function AdminDashboard() {
           </div>
         ) : null}
 
+        {storage === "memory" ? (
+          <div className="mt-6 border border-amber-500/30 bg-amber-500/[0.07] p-4 text-sm leading-relaxed text-amber-200/90">
+            <span className="font-mono text-[0.75rem] tracking-[0.16em]">ДЕМО-РЕЖИМ · </span>
+            заявки сохраняются только в памяти работающего экземпляра: форма и панель полностью
+            рабочие, но список может обнулиться после перезапуска. Для постоянного хранения
+            добавьте <span className="font-mono">KV_REST_API_URL</span> и{" "}
+            <span className="font-mono">KV_REST_API_TOKEN</span> (Vercel KV / Upstash), а для
+            уведомлений — <span className="font-mono">TELEGRAM_BOT_TOKEN</span> и{" "}
+            <span className="font-mono">TELEGRAM_CHAT_ID</span>.
+          </div>
+        ) : null}
+
         {defaultPw ? (
           <div className="mt-6 border border-amber-500/30 bg-amber-500/[0.07] p-4 text-sm leading-relaxed text-amber-200/90">
-            <span className="font-mono text-[0.625rem] tracking-[0.16em]">ДЕМО-РЕЖИМ · </span>
+            <span className="font-mono text-[0.75rem] tracking-[0.16em]">ДЕМО-РЕЖИМ · </span>
             используется пароль по умолчанию. Перед публикацией задайте{" "}
             <span className="font-mono">ADMIN_PASSWORD</span> в переменных окружения — доступ к
             данным клиентов больше ничем не ограничен.
@@ -417,7 +439,7 @@ export function AdminDashboard() {
           <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border border-amber-500/30 bg-amber-500/[0.07] p-4">
             <p className="text-sm text-amber-200/90">
               В списке есть демонстрационные записи — они помечены значком{" "}
-              <span className="font-mono text-[0.625rem] tracking-[0.16em]">ДЕМО</span>.
+              <span className="font-mono text-[0.75rem] tracking-[0.16em]">ДЕМО</span>.
             </p>
             <button
               type="button"
@@ -486,7 +508,7 @@ export function AdminDashboard() {
                 {["Клиент", "Mercedes", "Услуга", "Дата", "Время", "Статус", ""].map((h) => (
                   <th
                     key={h}
-                    className="px-5 py-4 font-mono text-[0.625rem] font-normal uppercase tracking-[0.2em] text-white/40"
+                    className="px-5 py-4 font-mono text-[0.75rem] font-normal uppercase tracking-[0.2em] text-white/40"
                   >
                     {h}
                   </th>
@@ -518,7 +540,7 @@ export function AdminDashboard() {
                   <td className="px-5 py-4">
                     <StatusPill status={b.status} />
                   </td>
-                  <td className="px-5 py-4 text-right font-mono text-[0.625rem] tracking-[0.16em] text-white/35">
+                  <td className="px-5 py-4 text-right font-mono text-[0.75rem] tracking-[0.16em] text-white/35">
                     {b.code}
                   </td>
                 </tr>
@@ -601,7 +623,7 @@ export function AdminDashboard() {
           <aside className="flex h-full w-full max-w-lg flex-col border-l border-white/10 bg-graphite">
             <header className="flex items-start justify-between gap-4 border-b border-white/10 px-6 py-5">
               <div>
-                <p className="font-mono text-[0.625rem] tracking-[0.2em] text-accent">
+                <p className="font-mono text-[0.75rem] tracking-[0.2em] text-accent">
                   {selected.code}
                 </p>
                 <h2 className="mt-2 text-xl text-white">{selected.name}</h2>
@@ -651,7 +673,7 @@ export function AdminDashboard() {
 
                 <DetailRow icon={<Phone size={15} strokeWidth={1.6} />} label="Комментарий">
                   {selected.comment || "—"}
-                  <span className="mt-2 block font-mono text-[0.625rem] tracking-[0.16em] text-white/30">
+                  <span className="mt-2 block font-mono text-[0.75rem] tracking-[0.16em] text-white/30">
                     СОЗДАНА {new Date(selected.createdAt).toLocaleString("ru-RU")}
                   </span>
                 </DetailRow>
@@ -716,7 +738,7 @@ export function AdminDashboard() {
                 type="button"
                 disabled={busy}
                 onClick={() => void remove(selected.id)}
-                className="mt-3 flex w-full items-center justify-center gap-2 border border-red-500/30 py-3 font-mono text-[0.625rem] uppercase tracking-[0.18em] text-red-300/80 transition-colors hover:border-red-500/60 hover:text-red-200"
+                className="mt-3 flex w-full items-center justify-center gap-2 border border-red-500/30 py-3 font-mono text-[0.75rem] uppercase tracking-[0.18em] text-red-300/80 transition-colors hover:border-red-500/60 hover:text-red-200"
               >
                 <Trash2 size={13} strokeWidth={1.75} />
                 Удалить заявку
@@ -741,7 +763,7 @@ export function AdminDashboard() {
 function Stat({ label, value, accent }: { label: string; value: number; accent?: boolean }) {
   return (
     <div className="bg-ink p-6">
-      <p className="font-mono text-[0.625rem] uppercase tracking-[0.2em] text-white/40">{label}</p>
+      <p className="font-mono text-[0.75rem] uppercase tracking-[0.2em] text-white/40">{label}</p>
       <p
         className={[
           "display mt-3 text-5xl leading-none",
@@ -770,7 +792,7 @@ function FilterChip({
       type="button"
       onClick={onClick}
       className={[
-        "shrink-0 border px-4 py-2.5 font-mono text-[0.625rem] uppercase tracking-[0.16em] transition-colors",
+        "shrink-0 border px-4 py-2.5 font-mono text-[0.75rem] uppercase tracking-[0.16em] transition-colors",
         active
           ? "border-accent bg-accent/12 text-accent"
           : "border-white/10 text-white/45 hover:border-white/30 hover:text-white",
@@ -784,7 +806,7 @@ function FilterChip({
 function StatusPill({ status }: { status: BookingStatus }) {
   return (
     <span
-      className={`inline-block border px-2.5 py-1 font-mono text-[0.563rem] uppercase tracking-[0.16em] ${STATUS_TONE[status]}`}
+      className={`inline-block border px-2.5 py-1 font-mono text-[0.6875rem] uppercase tracking-[0.16em] ${STATUS_TONE[status]}`}
     >
       {STATUS_LABELS[status]}
     </span>
@@ -802,7 +824,7 @@ function DemoChip() {
 function Cell({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="font-mono text-[0.563rem] uppercase tracking-[0.16em] text-white/35">{label}</p>
+      <p className="font-mono text-[0.6875rem] uppercase tracking-[0.16em] text-white/35">{label}</p>
       <p className="mt-1 text-silver">{value}</p>
     </div>
   );
@@ -821,7 +843,7 @@ function DetailRow({
     <div className="flex gap-4 border-b border-white/[0.08] pb-5">
       <span className="mt-0.5 text-accent">{icon}</span>
       <div className="min-w-0 flex-1">
-        <dt className="font-mono text-[0.625rem] uppercase tracking-[0.2em] text-white/40">
+        <dt className="font-mono text-[0.75rem] uppercase tracking-[0.2em] text-white/40">
           {label}
         </dt>
         <dd className="mt-2 text-sm leading-relaxed text-silver">{children}</dd>
